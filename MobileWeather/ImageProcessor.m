@@ -31,21 +31,77 @@
     return self;
 }
 
-- (UIImage *)imageFromConditionImage:(NSString *)conditionImage {
-    UIImage *image = [UIImage imageNamed:conditionImage];
-    
+- (UIImage *)imageFromConditionImage:(NSString *)conditionImage imageSize:(ImageSize)imageSize {
+    UIImage *image = [UIImage systemImageNamed:[self mw_systemImageFromAssetsImage:conditionImage] withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:[ImageSizeHelper floatForImageSize:imageSize] weight:UIImageSymbolWeightMedium]];
+
     if (image == nil) {
         image = [UIImage imageNamed:@"unknown"];
     }
-    
+
     return image;
 }
 
+- (SDLArtwork *)artworkFromConditionImage:(NSString *)conditionImage imageSize:(ImageSize)imageSize isPersistent:(BOOL)isPersistent isTemplate:(BOOL)isTemplate {
+    SDLArtwork *artwork;
+    if (isTemplate) {
+        artwork = [[SDLArtwork alloc] initWithImage:[[self imageFromConditionImage:conditionImage imageSize:imageSize] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] persistent:isPersistent asImageFormat:SDLArtworkImageFormatPNG];
+    } else {
+        artwork = [[SDLArtwork alloc] initWithImage:[self imageFromConditionImage:conditionImage imageSize:imageSize] persistent:isPersistent asImageFormat:SDLArtworkImageFormatPNG];
+    }
+    return artwork;
+}
+
 - (NSData *)dataFromConditionImage:(NSString *)conditionImage {
-    UIImage *image = [self imageFromConditionImage:conditionImage];
+    UIImage *image = [self imageFromConditionImage:conditionImage imageSize:ImageSizeSmall];
     NSData *data = UIImagePNGRepresentation(image);
     
     return data;
+}
+
+- (NSString *)mw_systemImageFromAssetsImage:(NSString *)imageName {
+    NSString *newImageName = imageName;
+    if ([imageName isEqualToString:@"chancerain"]) {
+        newImageName = @"cloud.drizzle";
+    } else if ([imageName isEqualToString:@"chancesnow"]) {
+        newImageName = @"cloud.snow";
+    } else if ([imageName isEqualToString:@"clear-day"]) {
+        newImageName = @"sun.max";
+    } else if ([imageName isEqualToString:@"clear-night"]) {
+        newImageName = @"moon";
+    } else if ([imageName isEqualToString:@"cloudy"]) {
+        newImageName = @"smoke";
+    } else if ([imageName isEqualToString:@"flurries"]) {
+        newImageName = @"snow";
+    } else if ([imageName isEqualToString:@"fog"]) {
+        newImageName = @"cloud.fog";
+    } else if ([imageName isEqualToString:@"hazy"]) {
+        newImageName = @"sun.haze";
+    } else if ([imageName isEqualToString:@"partly-cloudy-day"]) {
+        newImageName = @"cloud.sun";
+    } else if ([imageName isEqualToString:@"partly-cloudy-night"]) {
+        newImageName = @"cloud.moon";
+    } else if ([imageName isEqualToString:@"partlycloudy"]) {
+        newImageName = @"cloud";
+    } else if ([imageName isEqualToString:@"partlysunny"]) {
+        newImageName = @"cloud.sun";
+    } else if ([imageName isEqualToString:@"rain"]) {
+        newImageName = @"cloud.rain";
+    } else if ([imageName isEqualToString:@"sleet"]) {
+        newImageName = @"cloud.sleet";
+    } else if ([imageName isEqualToString:@"snow"]) {
+        newImageName = @"cloud.snow";
+    } else if ([imageName isEqualToString:@"sunny"]) {
+        newImageName = @"sun.max";
+    } else if ([imageName isEqualToString:@"tstorms"]) {
+        newImageName = @"cloud.bolt";
+    } else if ([imageName isEqualToString:@"menu-alert"]) {
+        newImageName = @"exclamationmark.triangle";
+    } else if ([imageName isEqualToString:@"menu-day"]) {
+        newImageName = @"calendar";
+    } else if ([imageName isEqualToString:@"menu-time"]) {
+        newImageName = @"clock";
+    }
+    return newImageName;
 }
 
 @end
